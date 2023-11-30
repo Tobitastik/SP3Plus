@@ -1,0 +1,19 @@
+@startuml
+
+object Menu
+object Film
+object Serie
+object User
+object Categories
+object IOException
+object Media
+
+User -> Menu
+User -> Media
+Menu -> Film
+Menu -> Serie
+Menu -> Categories
+IOException -> Film
+IOException -> Serie
+
+@enduml

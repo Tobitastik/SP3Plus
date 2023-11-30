@@ -1,0 +1,72 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+Class Main
+Main : startup()
+
+Class Menu
+Menu : Login()
+Menu : CreateNewAccount()
+
+Class User
+User : String userName
+User : String passWord
+User : ArrayList<String> saved
+User : ArrayList<String> watched
+
+Class UserMenu
+UserMenu : searchByName
+UserMenu : searchByAge
+UserMenu : searchByCat
+UserMenu : searchByRating
+
+UserMenu : getWatched()
+UserMenu : getSaved()
+UserMenu : removeSaved()
+
+
+Class Media
+Media : + Play()
+Media : String Play film"1.Play eller 2. Save"
+Media : String Play serie"1. Play eller 2. Save -> arraylist for episoder og sæsoner"
+
+Class Film
+Film : String name
+Film : int rating
+Film : int year
+Film : ArrayList<Categories>
+
+Class Serie
+Serie : String name
+Serie : int rating
+Serie : int age
+Serie : ArrayList<Categories>
+
+Class FileIO
+FileIO : - Scanner scanner
+FileIO : ArrayList<Film> readFilmData()
+FileIO : ArrayList<Serie> readSerieData()
+
+Class Fejl
+Fejl : error()
+
+Class TextUI
+TextUI : userInput()
+
+
+Main -> Menu
+Main -> FileIO
+FileIO -> Fejl
+User --> UserMenu
+TextUI --> UserMenu
+TextUI --> Menu
+Menu -> User
+
+
+Film -> Media
+Serie -> Media
+Media --> UserMenu
+UserMenu -> Film
+UserMenu -> Serie
+
+@enduml
