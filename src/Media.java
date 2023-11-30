@@ -13,7 +13,7 @@ public class Media {
         System.out.println("1. Play");
         System.out.println("2. Save");
 
-        int choice = textUI.getNumericInput("Vælg en mulighed:");
+        int choice = textUI.getNumericInput("V?lg en mulighed:");
 
         if (choice == 1) {
             return "Play";
@@ -36,9 +36,9 @@ public class Media {
 
             System.out.println("Play Serie - Season " + season + ", Episode " + episode);
 
-            Serie watchedSerie = new Serie("Watched Serie", "Year", new ArrayList<>(), 0, new ArrayList<>());
+            Serie watchedSerie = new Serie("Watched Serie", "Year", new ArrayList<>(), 0, "season");
             Season watchedSeason = new Season(Integer.toString(season), new ArrayList<>(Arrays.asList(episode)));
-            watchedSerie.getSeason().add(watchedSeason);
+            //watchedSerie.getSeason().add(watchedSeason);
 
             System.out.println("Debug: User information - " + user);
 
@@ -62,18 +62,18 @@ public class Media {
     }
 
 
-    //gemmes i tilfælde af den anden ikke virker spoiler it doesn't
+    //gemmes i tilf?lde af den anden ikke virker spoiler it doesn't
    /* public void playSerieOrSave() {
         System.out.println("1. Play");
         System.out.println("2. Save");
 
-        int choice = textUI.getNumericInput("Vælg en mulighed:");
+        int choice = textUI.getNumericInput("V?lg en mulighed:");
 
         if (choice == 1) {
-            int season = textUI.getNumericInput("Vælg sæson:");
-            int episode = textUI.getNumericInput("Vælg episode:");
+            int season = textUI.getNumericInput("V?lg s?son:");
+            int episode = textUI.getNumericInput("V?lg episode:");
 
-            System.out.println("Play Serie - Sæson " + season + ", Episode " + episode);
+            System.out.println("Play Serie - S?son " + season + ", Episode " + episode);
 
             Serie watchedSerie = new Serie("Watched Serie", "Year", new ArrayList<>(), 0, new ArrayList<>());
             Season watchedSeason = new Season(Integer.toString(season), new ArrayList<>(Arrays.asList(episode)));

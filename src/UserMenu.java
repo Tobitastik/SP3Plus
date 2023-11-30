@@ -46,7 +46,8 @@ public class UserMenu {
                         searchForRating();
                         break;
                     case 5:
-                        searchForSeason();
+                        System.out.println("Work in progress");
+                        //searchForSeason();
                         break;
                     case 0:
                         System.out.println("Exiting menu");
@@ -190,7 +191,7 @@ public class UserMenu {
             }
         }
     }
-    private void searchForSeason() {
+  /* private void searchForSeason() {
         int searchSeason = ui.getNumericInput("Enter season search:");
         ArrayList<Serie> searchResults = new ArrayList<>();
 
@@ -223,7 +224,7 @@ public class UserMenu {
                 System.out.println("Please enter a valid number");
             }
         }
-    }
+    }*/
 
     private void displaySearchResults(ArrayList<? extends MediaInterface> searchResults){
         int index = 0;

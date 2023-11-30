@@ -6,25 +6,21 @@ public class Serie implements MediaInterface{
     private String year;
     private ArrayList<String> categories;
     private double rating;
-    private ArrayList<Season> season;
+    private String season;
     private ArrayList<Integer> episodes;
 
 
     private String startYear;
     private String endYear;
 
-    public Serie(String name, String year, ArrayList<String> categories, double rating, ArrayList<Season> season){
+    public Serie(String name, String year, ArrayList<String> categories, double rating, String season){
 
         this.name = name;
         this. year = year;
         this.categories = categories;
         this.rating = rating;
         this.season = season;
-        this.episodes = new ArrayList<>();
 
-        for(Season s : season){
-            episodes.addAll(s.getEpisodes());
-        }
 
     }
 
@@ -68,8 +64,7 @@ public class Serie implements MediaInterface{
         return rating;
     }
 
-    public ArrayList<Season> getSeason() {
-
+    public String getSeason() {
         return season;
     }
 
@@ -80,9 +75,9 @@ public class Serie implements MediaInterface{
 
     @Override
     public String display() {
-        StringBuilder seasonString = new StringBuilder("[");
+        /*StringBuilder seasonString = new StringBuilder("[");
 
-        for (Season s : season) {
+           for (Season s : season) {
             seasonString.append("Season").append(s.getNumberOfSeasons()).append(": ");
             ArrayList<Integer> seasonEpisodes = s.getEpisodes();
 
@@ -103,14 +98,14 @@ public class Serie implements MediaInterface{
             seasonString.delete(seasonString.length() - 3, seasonString.length());
         }
 
-        seasonString.append("]");
+        seasonString.append("]");*/
 
         return "Serie{" +
                 "Name = " + name +
                 ", Year = " + year +
                 ", Categories = " + categories +
                 ", Rating = " + rating +
-                ", Season = " + seasonString.toString() + "}";
+                ", Season = " + season + "}";
     }
 
 }

@@ -24,9 +24,7 @@ public class FileIO {
 
                 Film film = new Film(name, year, new ArrayList<>(Arrays.asList(categories)), rating);
 
-
                 films.add(film);
-
 
             }
         } catch (FileNotFoundException e) {
@@ -36,6 +34,7 @@ public class FileIO {
 
         return films;
     }
+
 
     public ArrayList<Serie> readSerieData() {
         ArrayList<Serie> series = new ArrayList<>();
@@ -51,22 +50,7 @@ public class FileIO {
                 String[] categories = tempDataS[2].trim().split(",");
                 String ratingString = tempDataS[3].replace(",", ".");
                 double rating = Double.parseDouble(ratingString);
-                String[] seasonsData = tempDataS[4].trim().split(",");
-
-                ArrayList<Season> seasons = new ArrayList<>();
-
-                for (String seasonInfo : seasonsData) {
-                    String[] seasonParts = seasonInfo.split("-");
-                    String seasonNumber = seasonParts[0].replace("Season", "").trim();
-                    String[] episodeParts = seasonParts[1].split("Episode");
-
-                    ArrayList<Integer> episodes = new ArrayList<>();
-                    for (String episode : episodeParts) {
-                        episodes.add(Integer.parseInt(episode.trim()));
-                    }
-
-                    seasons.add(new Season(seasonNumber, episodes));
-                }
+                String seasons = tempDataS[4];
 
                 Serie serie = new Serie(name, yearString, new ArrayList<>(Arrays.asList(categories)), rating, seasons);
                 setStartAndEndYear(serie, yearString);
@@ -145,7 +129,8 @@ public class FileIO {
     }
 
     public Serie createSerie(String serieName) {
-        return new Serie(serieName, "Year", new ArrayList<>(), 0.0, new ArrayList<>());
+
+        return new Serie(serieName, "Year", new ArrayList<>(), 0.0, "season");
     }
 
     public ArrayList<User> readUsersFromFile() {
