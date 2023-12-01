@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class Media {
     private User user;
-    private TextUI textUI = new TextUI();
+    private TextUI textUI;
 
     public Media(TextUI textUI){
         this.textUI = textUI;
@@ -36,8 +36,8 @@ public class Media {
 
             System.out.println("Play Serie - Season " + season + ", Episode " + episode);
 
-            Serie watchedSerie = new Serie("Watched Serie", "Year", new ArrayList<>(), 0, "season");
-            Season watchedSeason = new Season(Integer.toString(season), new ArrayList<>(Arrays.asList(episode)));
+            Serie watchedSerie = new Serie("Watched Serie", "Year", new ArrayList<>(), 0, new ArrayList<>());
+            Season watchedSeason = new Season(Integer.toString(season), episode);
             //watchedSerie.getSeason().add(watchedSeason);
 
             System.out.println("Debug: User information - " + user);
@@ -46,10 +46,9 @@ public class Media {
 
                 String serieName = watchedSerie.getName();
 
-
-
                 FileIO io = new FileIO();
                 io.writeUsersToFile(new ArrayList<>(Arrays.asList(user)), "data/accounts.txt");
+
             } else {
                 System.out.println("User not found. Cannot add watched series.");
             }
@@ -60,6 +59,7 @@ public class Media {
             System.out.println("Invalid choice");
         }
     }
+
 
 
     //gemmes i tilf?lde af den anden ikke virker spoiler it doesn't

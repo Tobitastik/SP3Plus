@@ -6,57 +6,50 @@ public class Serie implements MediaInterface{
     private String year;
     private ArrayList<String> categories;
     private double rating;
-    private String season;
+    private ArrayList<Season> seasons;
     private ArrayList<Integer> episodes;
-
-
     private String startYear;
     private String endYear;
 
-    public Serie(String name, String year, ArrayList<String> categories, double rating, String season){
-
+    public Serie(String name, String year, ArrayList<String> categories, double rating, ArrayList<Season> seasons){
         this.name = name;
         this. year = year;
         this.categories = categories;
         this.rating = rating;
-        this.season = season;
-
-
+        this.seasons = seasons;
+        this.episodes = new ArrayList<>();
     }
 
     public String getName() {
         return name;
     }
 
-    public String getStartYear() {
+    public String getStartYear(){
         return startYear;
     }
 
-    public void setStartYear(String startYear) {
-        this.startYear = startYear;
-    }
-
-    public String getEndYear() {
+    public String getEndYear(){
         return endYear;
     }
 
-    public void setEndYear(String endYear) {
+    public void setStartYear(String startYear){
+        this.startYear = startYear;
+    }
+
+    public void setEndYear(String endYear){
         this.endYear = endYear;
     }
 
-    public String getYear() {
-        if(startYear != null && endYear != null) {
-           return startYear + "-"+ endYear;
-        } else if(startYear != null){
-           return startYear;
-        } else{
-           return"";
-        }
-
+    public String getYear(){
+        if(startYear != null && endYear != null){
+            return startYear +"-"+endYear;
+        } else if (startYear != null){
+            return startYear;
+        } else
+            return "";
     }
 
-
-    public ArrayList<String> getCategories() {
+   public ArrayList<String> getCategories() {
         return categories;
     }
 
@@ -64,8 +57,9 @@ public class Serie implements MediaInterface{
         return rating;
     }
 
-    public String getSeason() {
-        return season;
+    public ArrayList<Season> getSeason() {
+
+        return seasons;
     }
 
     public ArrayList<Integer> getEpisodes(){
@@ -75,37 +69,27 @@ public class Serie implements MediaInterface{
 
     @Override
     public String display() {
-        /*StringBuilder seasonString = new StringBuilder("[");
 
-           for (Season s : season) {
+        StringBuilder seasonString = new StringBuilder("[");
+
+        for (Season s : seasons) {
             seasonString.append("Season").append(s.getNumberOfSeasons()).append(": ");
-            ArrayList<Integer> seasonEpisodes = s.getEpisodes();
+            int seasonEpisodes = s.getEpisodes();
 
-            for (int episode : seasonEpisodes) {
-                seasonString.append("Episode").append(episode).append(", ");
-            }
-
-
-            if (!seasonEpisodes.isEmpty()) {
-                seasonString.delete(seasonString.length() - 2, seasonString.length());
-            }
-
-            seasonString.append(" | ");
+            seasonString.append("Episode").append(seasonEpisodes).append(" | ");
         }
 
-
-        if (!season.isEmpty()) {
+        if (!seasons.isEmpty()) {
             seasonString.delete(seasonString.length() - 3, seasonString.length());
         }
 
-        seasonString.append("]");*/
-
+        seasonString.append("]");
         return "Serie{" +
                 "Name = " + name +
                 ", Year = " + year +
                 ", Categories = " + categories +
                 ", Rating = " + rating +
-                ", Season = " + season + "}";
+                ", Season = " + seasons + "}";
     }
 
 }

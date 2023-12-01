@@ -8,7 +8,7 @@ public class UserMenu {
     private ArrayList<Film> readFilmData = new ArrayList<>();
     private Menu menu;
     public User user;
-    public FileIO fileIO = new FileIO();
+    FileLib fl = new FileLib();
 
 
     public UserMenu(TextUI ui, ArrayList<Film> films, ArrayList<Serie> series, Menu menu) {
@@ -46,8 +46,7 @@ public class UserMenu {
                         searchForRating();
                         break;
                     case 5:
-                        System.out.println("Work in progress");
-                        //searchForSeason();
+                        searchForSeason();
                         break;
                     case 0:
                         System.out.println("Exiting menu");
@@ -105,7 +104,7 @@ public class UserMenu {
         for (Serie serie : series) {
             String yearString = serie.getYear();
             if (yearString.contains("-")) {
-         String[] yearRange = yearString.split("-");
+                String[] yearRange = yearString.split("-");
                 int startYear = Integer.parseInt(yearRange[0].trim());
 
                 if (yearRange.length > 1 && !yearRange[1].trim().equals("")) {
@@ -191,7 +190,7 @@ public class UserMenu {
             }
         }
     }
-  /* private void searchForSeason() {
+    private void searchForSeason() {
         int searchSeason = ui.getNumericInput("Enter season search:");
         ArrayList<Serie> searchResults = new ArrayList<>();
 
@@ -224,7 +223,7 @@ public class UserMenu {
                 System.out.println("Please enter a valid number");
             }
         }
-    }*/
+    }
 
     private void displaySearchResults(ArrayList<? extends MediaInterface> searchResults){
         int index = 0;
@@ -232,17 +231,17 @@ public class UserMenu {
             System.out.println("No media match found");
         } else {
             System.out.println("Search results:");
-                for(MediaInterface media : searchResults){
-                    System.out.println(index+1);
-                    System.out.println(media.display());
-                    index++;
-                    System.out.println();
-                }
+            for(MediaInterface media : searchResults){
+                System.out.println(index+1);
+                System.out.println(media.display());
+                index++;
+                System.out.println();
             }
-   }
+        }
+    }
 
     public void Runner() {
-        readFilmData = fileIO.readFilmData(); // Kalder på readFilmData Arraylisten for filmene fra FileIO klassen
+        readFilmData = fl.getFilms(); // Kalder på readFilmData Arraylisten for filmene fra FileIO klassen
         input();
 
     }

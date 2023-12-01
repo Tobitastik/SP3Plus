@@ -1,9 +1,7 @@
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Scanner;
+
 
 public class DBIO {
 
@@ -41,10 +39,10 @@ public class DBIO {
         }
     }
 
-    public ArrayList<Film> readFilmDataDB() {
+    public void readFilmDataDB(FileLib filmLibrary) {
         Connection conn = null;
         PreparedStatement stmt = null;
-        ArrayList<Film> films = new ArrayList<>();
+
 
         try {
             conn = connect();
@@ -63,7 +61,7 @@ public class DBIO {
                 ArrayList<String> categories = new ArrayList<>(Arrays.asList(categoriesArray));
 
                 Film film = new Film(name, year, categories, rating);
-                films.add(film);
+                filmLibrary.addFilmDB(film);
             }
 
         } catch (SQLException e) {
@@ -76,49 +74,58 @@ public class DBIO {
             }
             disconnect();
         }
-
-        return films;
     }
 
-    public ArrayList<Serie> readSerieDataDB() {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ArrayList<Serie> series = new ArrayList<>();
 
-        try {
-            conn = connect();
+    public void readSerieDataDB(FileLib serieLibrary){
+            Connection conn = null;
+            PreparedStatement stmt = null;
 
-            String sql = "SELECT name, year, category, rating, season FROM serie";
-            stmt = conn.prepareStatement(sql);
 
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                String name = rs.getString("Name");
-                String year = rs.getString("Year");
-                String[] categoriesArray = rs.getString("Category").split(",");
-                double rating = rs.getDouble("Rating");
-                String season = rs.getString("Season");
-
-                ArrayList<String> categories = new ArrayList<>(Arrays.asList(categoriesArray));
-
-                Serie serie = new Serie(name, year, categories, rating, season);
-                series.add(serie);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
             try {
-                if (stmt != null)
-                    stmt.close();
-            } catch (SQLException se2) {
+                conn = connect();
+
+                String sql = "SELECT name, year, category, rating, season FROM serie";
+                stmt = conn.prepareStatement(sql);
+
+                ResultSet rs = stmt.executeQuery();
+
+                while (rs.next()) {
+                    String name = rs.getString("Name");
+                    String year = rs.getString("Year");
+                    String[] categoriesArray = rs.getString("Category").split(",");
+                    double rating = rs.getDouble("Rating");
+                    String[] seasonsArray = rs.getString("Season").split("\\.");
+
+                    ArrayList<String> categories = new ArrayList<>(Arrays.asList(categoriesArray));
+                    ArrayList<Season> seasons = new ArrayList<>();
+
+                    for (String seasonInfo : seasonsArray) {
+                        String[] seasonParts = seasonInfo.split("-");
+                        String numberOfSeasons = seasonParts[0];
+                        int numberOfEpisodes = Integer.parseInt(seasonParts[1]);
+                        Season season = new Season(numberOfSeasons, numberOfEpisodes);
+                        seasons.add(season);
+                    }
+
+                    Serie serie = new Serie(name, year, categories, rating, seasons);
+                    serieLibrary.addSerieDB(serie);
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (stmt != null)
+                        stmt.close();
+                } catch (SQLException se2) {
+                }
+                disconnect();
             }
-            disconnect();
         }
 
-        return series;
-    }
+
+
 
     public void displayNames() {
         Connection conn = null;
