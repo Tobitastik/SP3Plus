@@ -36,8 +36,8 @@ public class Media {
 
             System.out.println("Play Serie - Season " + season + ", Episode " + episode);
 
-            Serie watchedSerie = new Serie("Watched Serie", "Year", new ArrayList<>(), 0, "season");
-            Season watchedSeason = new Season(Integer.toString(season), new ArrayList<>(Arrays.asList(episode)));
+            Serie watchedSerie = new Serie("Watched Serie", "Year", new ArrayList<>(), 0, new ArrayList<>());
+            Season watchedSeason = new Season(Integer.toString(season), episode);
             //watchedSerie.getSeason().add(watchedSeason);
 
             System.out.println("Debug: User information - " + user);

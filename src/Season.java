@@ -2,9 +2,9 @@ import java.util.ArrayList;
 
 public class Season {
     private String numberOfSeasons;
-    private ArrayList<Integer> episodes;
+    private int episodes;
 
-    public Season(String numberOfSeasons, ArrayList<Integer> episodes){
+    public Season(String numberOfSeasons, int episodes){
         this.numberOfSeasons = numberOfSeasons;
         this.episodes = episodes;
     }
@@ -13,11 +13,8 @@ public class Season {
         return numberOfSeasons;
     }
 
-    public ArrayList<Integer> getEpisodes(){
+    public int getEpisodes(){
         return episodes;
     }
 
-    public void addEpisode(int episode){
-        this.episodes.add(episode);
-    }
 }

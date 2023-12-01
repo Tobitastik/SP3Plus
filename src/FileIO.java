@@ -7,8 +7,7 @@ public class FileIO {
 
     TextUI ui = new TextUI();
 
-    public ArrayList<Film> readFilmData() {
-        ArrayList<Film> films = new ArrayList<>();
+    public void readFilmData(FileLib filmLibrary) {
         File fileF = new File("data/100bedstefilm.txt");
 
         try (Scanner scanner = new Scanner(fileF)) {
@@ -23,21 +22,15 @@ public class FileIO {
                 double rating = Double.parseDouble(ratingString);
 
                 Film film = new Film(name, year, new ArrayList<>(Arrays.asList(categories)), rating);
-
-                films.add(film);
-
+                filmLibrary.addFilm(film);
             }
         } catch (FileNotFoundException e) {
             ui.getInput("File not found (Film)");
-
         }
-
-        return films;
     }
 
 
-    public ArrayList<Serie> readSerieData() {
-        ArrayList<Serie> series = new ArrayList<>();
+    public void readSerieData(FileLib serieLibrary) {
         File fileS = new File("data/100bedsteserier.txt");
 
         try (Scanner scanner = new Scanner(fileS)) {
@@ -50,20 +43,29 @@ public class FileIO {
                 String[] categories = tempDataS[2].trim().split(",");
                 String ratingString = tempDataS[3].replace(",", ".");
                 double rating = Double.parseDouble(ratingString);
-                String seasons = tempDataS[4];
+                String[] seasonArray = tempDataS[4].trim().split(",");
+
+                ArrayList<String> seasonsList = new ArrayList<>(Arrays.asList(seasonArray));
+                ArrayList<Season> seasons = new ArrayList<>();
+
+                for (String seasonInfo : seasonsList) {
+                    String[] seasonParts = seasonInfo.split("-");
+                    String numberOfSeasons = seasonParts[0];
+                    int numberOfEpisodes = Integer.parseInt(seasonParts[1]);
+                    Season season = new Season(numberOfSeasons, numberOfEpisodes);
+                    seasons.add(season);
+                }
 
                 Serie serie = new Serie(name, yearString, new ArrayList<>(Arrays.asList(categories)), rating, seasons);
                 setStartAndEndYear(serie, yearString);
 
-                series.add(serie);
-
+                serieLibrary.addSerie(serie);
             }
         } catch (FileNotFoundException e) {
             System.out.println("File not found (Serie)");
         }
-
-        return series;
     }
+
 
     private void setStartAndEndYear(Serie serie, String yearString) {
         if (yearString.contains("-")) {
@@ -72,12 +74,11 @@ public class FileIO {
             if (yearRange.length > 1 && !yearRange[1].trim().equals("")) {
                 serie.setEndYear(yearRange[1].trim());
             } else {
-
                 serie.setEndYear("2023");
             }
         } else {
-
             serie.setStartYear(yearString);
+            serie.setEndYear(yearString);
         }
     }
 
@@ -130,7 +131,7 @@ public class FileIO {
 
     public Serie createSerie(String serieName) {
 
-        return new Serie(serieName, "Year", new ArrayList<>(), 0.0, "season");
+        return new Serie(serieName, "Year", new ArrayList<>(), 0.0, new ArrayList<>());
     }
 
     public ArrayList<User> readUsersFromFile() {
@@ -167,7 +168,6 @@ public class FileIO {
                     users.add(newUser);
                 } else {
 
-                    System.out.println("Warning: Invalid user line - " + userLine);
                 }
             }
         } catch (FileNotFoundException e) {

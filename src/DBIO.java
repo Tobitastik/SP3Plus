@@ -7,9 +7,9 @@ import java.util.Scanner;
 
 public class DBIO {
 
-    private static final String JDBC_URL = "jdbc:mysql://localhost/my_streaming";
+    private static final String JDBC_URL = "jdbc:mysql://localhost/stream";
     private static final String USER = "root";
-    private static final String PASSWORD = "b4U}]ADKqGcD86";
+    private static final String PASSWORD = "ekm94whb";
 
     private static Connection connection;
 
@@ -49,16 +49,16 @@ public class DBIO {
         try {
             conn = connect();
 
-            String sql = "SELECT name, year, category, rating FROM movie";
+            String sql = "SELECT title, year, genre, rating FROM movie";
             stmt = conn.prepareStatement(sql);
 
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                String name = rs.getString("Name");
-                int year = rs.getInt("Year");
-                String[] categoriesArray = rs.getString("Category").split(",");
-                double rating = rs.getDouble("Rating");
+                String name = rs.getString("title");
+                int year = rs.getInt("year");
+                String[] categoriesArray = rs.getString("genre").split(",");
+                double rating = rs.getDouble("rating");
 
                 ArrayList<String> categories = new ArrayList<>(Arrays.asList(categoriesArray));
 
@@ -88,7 +88,7 @@ public class DBIO {
         try {
             conn = connect();
 
-            String sql = "SELECT name, year, category, rating, season FROM serie";
+            String sql = "SELECT title, year_range, genres, rating, seasons FROM serie";
             stmt = conn.prepareStatement(sql);
 
             ResultSet rs = stmt.executeQuery();
@@ -98,13 +98,23 @@ public class DBIO {
                 String year = rs.getString("Year");
                 String[] categoriesArray = rs.getString("Category").split(",");
                 double rating = rs.getDouble("Rating");
-                String season = rs.getString("Season");
+                String[] seasonsArray = rs.getString("Season").split(".");
 
                 ArrayList<String> categories = new ArrayList<>(Arrays.asList(categoriesArray));
+                ArrayList<Season> seasons = new ArrayList<>();
 
-                Serie serie = new Serie(name, year, categories, rating, season);
+                for (String seasonInfo : seasonsArray) {
+                    String[] seasonParts = seasonInfo.split("-");
+                    String numberOfSeasons = seasonParts[0];
+                    int numberOfEpisodes = Integer.parseInt(seasonParts[1]);
+                    Season season = new Season(numberOfSeasons, numberOfEpisodes);
+                    seasons.add(season);
+                }
+
+                Serie serie = new Serie(name, year, categories, rating, seasons);
                 series.add(serie);
             }
+
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -135,7 +145,7 @@ public class DBIO {
 
 
             while (rs.next()) {
-                String name = rs.getString("Name");
+                String name = rs.getString("title");
                 System.out.println(name);
 
             }
@@ -152,5 +162,5 @@ public class DBIO {
             disconnect();
         }
     }
-
 }
+
