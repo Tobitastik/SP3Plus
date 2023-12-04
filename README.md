@@ -1,2 +1,2 @@
-# SP3
-Gruppe b_D: Rasmus, Zia, Allan og Tobias
+# SP3Plus
+Gruppe b_D: Allan, Rasmus og Tobias
