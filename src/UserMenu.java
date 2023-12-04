@@ -2,36 +2,59 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class UserMenu {
-    private TextUI ui;
+    private TextUI textUI;
     private Media media;
     private ArrayList<Serie> series;
-    private ArrayList<Film> readFilmData = new ArrayList<>();
+    private ArrayList<Serie> seriesDB;
+    private ArrayList<Film> readFilmData;
+    private ArrayList<Serie> readSerieData;
     private Menu menu;
-    public User user;
-    public FileIO fileIO = new FileIO();
+    private SearchManager searchManager;
+    FileIO fileIO;
+    DBIO dbIO;
+    FileLib fl;
 
+
+    private static DBIO dbio = new DBIO();
 
     public UserMenu(TextUI ui, ArrayList<Film> films, ArrayList<Serie> series, Menu menu) {
-        this.ui = ui;
+        this.textUI = ui;
         this.series = series;
         this.readFilmData = films;
         this.media = new Media(ui);
         this.menu = menu;
+        this.searchManager = new SearchManager(fileIO, dbIO, textUI, fl);
     }
 
+    public UserMenu(SearchManager searchManager, TextUI textUI) {
+        this.searchManager = searchManager;
+        this.textUI = textUI;
+    }
+    public void chooseIOProvider() {
+        int choice = textUI.getNumericInput("Vil du gøre brug af FileIO eller DBIO? Tryk 1 for FileIO og 2 for DBIO:");
+
+        if (choice == 1) {
+            searchManager.performSearch(true);
+        } else if (choice == 2) {
+            searchManager.performSearch(false);
+        } else {
+            System.out.println("Ugyldigt valg. Prøv igen.");
+            chooseIOProvider();
+        }
+    }
 
     public void chooseMenu() {
         int choice;
 
-
-        int i = ui.getNumericInput("1 for Film 2 for Serie");
-        switch (i) {
+        int b = textUI.getNumericInput("1 for Film 2 for Serie");
+        switch (b) {
             case 1:
                 Runner();
                 break;
+
             case 2:
                 displayMenu();
-                choice = ui.getNumericInput("Chose your search method");
+                choice = textUI.getNumericInput("Chose your search method");
                 switch (choice) {
                     case 1:
                         searchForSerieName();
@@ -46,8 +69,7 @@ public class UserMenu {
                         searchForRating();
                         break;
                     case 5:
-                        System.out.println("Work in progress");
-                        //searchForSeason();
+                        searchForSeason();
                         break;
                     case 0:
                         System.out.println("Exiting menu");
@@ -65,16 +87,16 @@ public class UserMenu {
     }
 
 
-
-    private void displayMenu(){
+    private void displayMenu() {
         System.out.println("1. Search by name");
         System.out.println("2. Search by year");
         System.out.println("3. Search by categories");
         System.out.println("4. Search by rating");
         System.out.println("5. Search by season");
     }
+
     private void searchForSerieName() {
-        String searchName = ui.getInput("Enter name search:");
+        String searchName = textUI.getInput("Enter name search:");
         ArrayList<Serie> searchResults = new ArrayList<>();
 
         for (Serie serie : series) {
@@ -84,8 +106,8 @@ public class UserMenu {
         }
         displaySearchResults(searchResults);
 
-        if(!searchResults.isEmpty()) {
-            int selectedSerieIndex = ui.getNumericInput("Chose serie based on the number");
+        if (!searchResults.isEmpty()) {
+            int selectedSerieIndex = textUI.getNumericInput("Chose serie based on the number");
 
             if (selectedSerieIndex >= 1 && selectedSerieIndex <= searchResults.size()) {
                 Serie selectedSerie = searchResults.get(selectedSerieIndex - 1);
@@ -99,13 +121,13 @@ public class UserMenu {
     }
 
     private void searchForSerieYear() {
-        int searchYear = ui.getNumericInput("Enter year:");
+        int searchYear = textUI.getNumericInput("Enter year:");
         ArrayList<Serie> searchResults = new ArrayList<>();
 
         for (Serie serie : series) {
-            String yearString = serie.getYear();
+            String yearString = serie.getYearString();
             if (yearString.contains("-")) {
-         String[] yearRange = yearString.split("-");
+                String[] yearRange = yearString.split("-");
                 int startYear = Integer.parseInt(yearRange[0].trim());
 
                 if (yearRange.length > 1 && !yearRange[1].trim().equals("")) {
@@ -126,8 +148,8 @@ public class UserMenu {
 
         displaySearchResults(searchResults);
 
-        if(!searchResults.isEmpty()) {
-            int selectedSerieIndex = ui.getNumericInput("Chose serie based on the number");
+        if (!searchResults.isEmpty()) {
+            int selectedSerieIndex = textUI.getNumericInput("Chose serie based on the number");
 
             if (selectedSerieIndex >= 1 && selectedSerieIndex <= searchResults.size()) {
                 Serie selectedSerie = searchResults.get(selectedSerieIndex - 1);
@@ -139,8 +161,9 @@ public class UserMenu {
             }
         }
     }
+
     private void searchForCategories() {
-        String searchCategory = ui.getInput("Enter category search:");
+        String searchCategory = textUI.getInput("Enter category search:");
         ArrayList<Serie> searchResults = new ArrayList<>();
 
         for (Serie serie : series) {
@@ -155,7 +178,7 @@ public class UserMenu {
         displaySearchResults(searchResults);
 
         if (!searchResults.isEmpty()) {
-            int selectedSerieIndex = ui.getNumericInput("Choose serie based on the number");
+            int selectedSerieIndex = textUI.getNumericInput("Choose serie based on the number");
 
             if (selectedSerieIndex >= 1 && selectedSerieIndex <= searchResults.size()) {
                 Serie selectedSerie = searchResults.get(selectedSerieIndex - 1);
@@ -166,8 +189,9 @@ public class UserMenu {
             }
         }
     }
+
     private void searchForRating() {
-        double searchRating = ui.getDoubleInput("Enter minimum rating:");
+        double searchRating = textUI.getDoubleInput("Enter minimum rating:");
 
         ArrayList<Serie> searchResults = new ArrayList<>();
 
@@ -177,22 +201,29 @@ public class UserMenu {
             }
         }
 
+
         displaySearchResults(searchResults);
 
         if (!searchResults.isEmpty()) {
-            int selectedSerieIndex = ui.getNumericInput("Choose serie based on the number");
+            int selectedSerieIndex = textUI.getNumericInput("Choose serie based on the number");
 
             if (selectedSerieIndex >= 1 && selectedSerieIndex <= searchResults.size()) {
                 Serie selectedSerie = searchResults.get(selectedSerieIndex - 1);
-                System.out.println(selectedSerie.getName());
-                media.playSerieOrSave();
+                System.out.println(selectedSerie.getRating());
             } else {
                 System.out.println("Please enter a valid number");
             }
+        } else {
+            System.out.println("No series found with a rating equal to or higher than " + searchRating);
         }
+
+
     }
-  /* private void searchForSeason() {
-        int searchSeason = ui.getNumericInput("Enter season search:");
+
+
+
+    private void searchForSeason() {
+        int searchSeason = textUI.getNumericInput("Enter season search:");
         ArrayList<Serie> searchResults = new ArrayList<>();
 
         for (Serie serie : series) {
@@ -204,7 +235,7 @@ public class UserMenu {
                     continue;
                 }
 
-                if (seasonNumber == searchSeason) {
+                if (searchSeason == seasonNumber) {
                     searchResults.add(serie);
                     break;
                 }
@@ -214,7 +245,7 @@ public class UserMenu {
         displaySearchResults(searchResults);
 
         if (!searchResults.isEmpty()) {
-            int selectedSerieIndex = ui.getNumericInput("Choose serie based on the number");
+            int selectedSerieIndex = textUI.getNumericInput("Choose serie based on the number");
 
             if (selectedSerieIndex >= 1 && selectedSerieIndex <= searchResults.size()) {
                 Serie selectedSerie = searchResults.get(selectedSerieIndex - 1);
@@ -224,39 +255,28 @@ public class UserMenu {
                 System.out.println("Please enter a valid number");
             }
         }
-    }*/
+    }
 
-    private void displaySearchResults(ArrayList<? extends MediaInterface> searchResults){
+    private void displaySearchResults(ArrayList<? extends MediaInterface> searchResults) {
         int index = 0;
-        if(searchResults.isEmpty()){
+        if (searchResults.isEmpty()) {
             System.out.println("No media match found");
         } else {
             System.out.println("Search results:");
-                for(MediaInterface media : searchResults){
-                    System.out.println(index+1);
-                    System.out.println(media.display());
-                    index++;
-                    System.out.println();
-                }
+            for (MediaInterface media : searchResults) {
+                System.out.println(index + 1);
+                System.out.println(media.display());
+                index++;
+                System.out.println();
             }
-   }
+        }
+    }
 
     public void Runner() {
-        readFilmData = fileIO.readFilmData(); // Kalder på readFilmData Arraylisten for filmene fra FileIO klassen
         input();
 
     }
 
-    /*
-        private void MovieList() // listen over alle filmene
-        {
-            String a = "\nmovie list:\n";
-            for (Film films : readFilmData) {
-                a = a.concat(films.toString() + "\n");
-            }
-            ui.getInput(a);
-        }
-     */
 
     private void input() // input af tekst i console om hvad man vil søge efter, samt om man finder en film/serie af det man søger efter
     {
@@ -265,7 +285,7 @@ public class UserMenu {
 
         FilmCollection filmCollection = new FilmCollection(readFilmData);
 
-        System.out.println("Enter the type you will search for (Name/Year/Category/Rating): ");
+        System.out.println("Enter the type you will search for (Files: Name/Year/Category/Rating): ");
         String searching = scanner.nextLine();
 
         if ("Name".equalsIgnoreCase(searching)) {
@@ -299,31 +319,6 @@ public class UserMenu {
 
         }
 
-        public void searchByName(String searchName) // bruges til at søge efter navn af filmene
-        {
-            TextUI ui = new TextUI();
-
-            String lowerCaseSearchName = searchName.toLowerCase();
-
-            boolean found = false;
-
-            System.out.println("\nResults for search: " + searchName);
-
-
-            for (Film film : readFilmData) {
-                if (film.getName().toLowerCase().contains(lowerCaseSearchName)) {
-                    System.out.println(film);
-                    found = true;
-                }
-            }
-
-
-            if (!found) {
-
-                String userInput = ui.getInput("No films found");
-                System.out.println(userInput + searchName);
-            }
-        }
 
         public void searchByAge(int searchAge) // søger for udgivelsesdatoen af filmene
         {
@@ -395,7 +390,32 @@ public class UserMenu {
         }
 
 
-    }
+        public void searchByName(String searchName) // bruges til at søge efter navn af filmene
+        {
+            TextUI ui = new TextUI();
 
+            String lowerCaseSearchName = searchName.toLowerCase();
+
+            boolean found = false;
+
+            System.out.println("\nResults for search: " + searchName);
+
+
+            for (Film film : readFilmData) {
+                if (film.getName().toLowerCase().contains(lowerCaseSearchName)) {
+                    System.out.println(film);
+                    found = true;
+                }
+            }
+
+
+            if (!found) {
+
+                String userInput = ui.getInput("No films found");
+                System.out.println(userInput + searchName);
+            }
+        }
+
+    }
 
 }

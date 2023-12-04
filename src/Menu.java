@@ -12,10 +12,10 @@ public class Menu {
     public Menu(ArrayList<Film> films, ArrayList<Serie> series) {
         this.films = films;
         this.series = series;
-        loadUsersFromFile();
+        /*loadUsersFromFile();
         displayMenu();
         userMenu = new UserMenu(ui, films, series, this);
-        userMenu.chooseMenu();
+        userMenu.chooseMenu();*/
 
     }
 
