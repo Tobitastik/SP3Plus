@@ -1,3 +1,4 @@
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -5,11 +6,13 @@ public class UserMenu {
     private TextUI ui;
     private Media media;
     private ArrayList<Serie> series;
-    private ArrayList<Film> readFilmData = new ArrayList<>();
+    private ArrayList<Serie> seriesDB;
+    private ArrayList<Film> readFilmData;
+    private ArrayList<Serie> readSerieData;
     private Menu menu;
     public User user;
     FileLib fl = new FileLib();
-
+    private static DBIO dbio = new DBIO();
 
     public UserMenu(TextUI ui, ArrayList<Film> films, ArrayList<Serie> series, Menu menu) {
         this.ui = ui;
@@ -19,16 +22,15 @@ public class UserMenu {
         this.menu = menu;
     }
 
-
     public void chooseMenu() {
         int choice;
 
-
-        int i = ui.getNumericInput("1 for Film 2 for Serie");
-        switch (i) {
+        int b = ui.getNumericInput("1 for Film 2 for Serie");
+        switch (b) {
             case 1:
                 Runner();
                 break;
+
             case 2:
                 displayMenu();
                 choice = ui.getNumericInput("Chose your search method");
@@ -64,14 +66,14 @@ public class UserMenu {
     }
 
 
-
-    private void displayMenu(){
+    private void displayMenu() {
         System.out.println("1. Search by name");
         System.out.println("2. Search by year");
         System.out.println("3. Search by categories");
         System.out.println("4. Search by rating");
         System.out.println("5. Search by season");
     }
+
     private void searchForSerieName() {
         String searchName = ui.getInput("Enter name search:");
         ArrayList<Serie> searchResults = new ArrayList<>();
@@ -83,7 +85,7 @@ public class UserMenu {
         }
         displaySearchResults(searchResults);
 
-        if(!searchResults.isEmpty()) {
+        if (!searchResults.isEmpty()) {
             int selectedSerieIndex = ui.getNumericInput("Chose serie based on the number");
 
             if (selectedSerieIndex >= 1 && selectedSerieIndex <= searchResults.size()) {
@@ -102,7 +104,7 @@ public class UserMenu {
         ArrayList<Serie> searchResults = new ArrayList<>();
 
         for (Serie serie : series) {
-            String yearString = serie.getYear();
+            String yearString = serie.getYearString();
             if (yearString.contains("-")) {
                 String[] yearRange = yearString.split("-");
                 int startYear = Integer.parseInt(yearRange[0].trim());
@@ -125,7 +127,7 @@ public class UserMenu {
 
         displaySearchResults(searchResults);
 
-        if(!searchResults.isEmpty()) {
+        if (!searchResults.isEmpty()) {
             int selectedSerieIndex = ui.getNumericInput("Chose serie based on the number");
 
             if (selectedSerieIndex >= 1 && selectedSerieIndex <= searchResults.size()) {
@@ -138,6 +140,7 @@ public class UserMenu {
             }
         }
     }
+
     private void searchForCategories() {
         String searchCategory = ui.getInput("Enter category search:");
         ArrayList<Serie> searchResults = new ArrayList<>();
@@ -165,6 +168,7 @@ public class UserMenu {
             }
         }
     }
+
     private void searchForRating() {
         double searchRating = ui.getDoubleInput("Enter minimum rating:");
 
@@ -176,6 +180,7 @@ public class UserMenu {
             }
         }
 
+
         displaySearchResults(searchResults);
 
         if (!searchResults.isEmpty()) {
@@ -183,13 +188,19 @@ public class UserMenu {
 
             if (selectedSerieIndex >= 1 && selectedSerieIndex <= searchResults.size()) {
                 Serie selectedSerie = searchResults.get(selectedSerieIndex - 1);
-                System.out.println(selectedSerie.getName());
-                media.playSerieOrSave();
+                System.out.println(selectedSerie.getRating());
             } else {
                 System.out.println("Please enter a valid number");
             }
+        } else {
+            System.out.println("No series found with a rating equal to or higher than " + searchRating);
         }
+
+
     }
+
+
+
     private void searchForSeason() {
         int searchSeason = ui.getNumericInput("Enter season search:");
         ArrayList<Serie> searchResults = new ArrayList<>();
@@ -203,7 +214,7 @@ public class UserMenu {
                     continue;
                 }
 
-                if (seasonNumber == searchSeason) {
+                if (searchSeason == seasonNumber) {
                     searchResults.add(serie);
                     break;
                 }
@@ -225,14 +236,14 @@ public class UserMenu {
         }
     }
 
-    private void displaySearchResults(ArrayList<? extends MediaInterface> searchResults){
+    private void displaySearchResults(ArrayList<? extends MediaInterface> searchResults) {
         int index = 0;
-        if(searchResults.isEmpty()){
+        if (searchResults.isEmpty()) {
             System.out.println("No media match found");
         } else {
             System.out.println("Search results:");
-            for(MediaInterface media : searchResults){
-                System.out.println(index+1);
+            for (MediaInterface media : searchResults) {
+                System.out.println(index + 1);
                 System.out.println(media.display());
                 index++;
                 System.out.println();
@@ -246,16 +257,6 @@ public class UserMenu {
 
     }
 
-    /*
-        private void MovieList() // listen over alle filmene
-        {
-            String a = "\nmovie list:\n";
-            for (Film films : readFilmData) {
-                a = a.concat(films.toString() + "\n");
-            }
-            ui.getInput(a);
-        }
-     */
 
     private void input() // input af tekst i console om hvad man vil søge efter, samt om man finder en film/serie af det man søger efter
     {
@@ -264,7 +265,7 @@ public class UserMenu {
 
         FilmCollection filmCollection = new FilmCollection(readFilmData);
 
-        System.out.println("Enter the type you will search for (Name/Year/Category/Rating): ");
+        System.out.println("Enter the type you will search for (Files: Name/Year/Category/Rating): ");
         String searching = scanner.nextLine();
 
         if ("Name".equalsIgnoreCase(searching)) {
@@ -298,31 +299,6 @@ public class UserMenu {
 
         }
 
-        public void searchByName(String searchName) // bruges til at søge efter navn af filmene
-        {
-            TextUI ui = new TextUI();
-
-            String lowerCaseSearchName = searchName.toLowerCase();
-
-            boolean found = false;
-
-            System.out.println("\nResults for search: " + searchName);
-
-
-            for (Film film : readFilmData) {
-                if (film.getName().toLowerCase().contains(lowerCaseSearchName)) {
-                    System.out.println(film);
-                    found = true;
-                }
-            }
-
-
-            if (!found) {
-
-                String userInput = ui.getInput("No films found");
-                System.out.println(userInput + searchName);
-            }
-        }
 
         public void searchByAge(int searchAge) // søger for udgivelsesdatoen af filmene
         {
@@ -390,6 +366,178 @@ public class UserMenu {
             if (!found) {
                 String userInput = ui.getInput("No films found: " + searchRating);
                 System.out.println(userInput);
+            }
+        }
+
+
+        public void searchByName(String searchName) // bruges til at søge efter navn af filmene
+        {
+            TextUI ui = new TextUI();
+
+            String lowerCaseSearchName = searchName.toLowerCase();
+
+            boolean found = false;
+
+            System.out.println("\nResults for search: " + searchName);
+
+
+            for (Film film : readFilmData) {
+                if (film.getName().toLowerCase().contains(lowerCaseSearchName)) {
+                    System.out.println(film);
+                    found = true;
+                }
+            }
+
+
+            if (!found) {
+
+                String userInput = ui.getInput("No films found");
+                System.out.println(userInput + searchName);
+            }
+        }
+
+
+    }
+
+    public void RunnerSerieDB() {
+        readSerieData = fl.getSeriesDB(); // Kalder på readFilmData Arraylisten for filmene fra FileIO klassen
+        inputSerieDB();
+
+    }
+
+
+    private void inputSerieDB() // input af tekst i console om hvad man vil søge efter, samt om man finder en film/serie af det man søger efter
+    {
+        Scanner scanner = new Scanner(System.in);
+
+
+        SerieCollection serieCollection = new SerieCollection(readSerieData);
+
+        System.out.println("Enter the type you will search for (Files: Name/Year/Category/Rating): ");
+        String searching = scanner.nextLine();
+
+        if ("Name".equalsIgnoreCase(searching)) {
+            System.out.println("Enter Name: ");
+            String searchName = scanner.nextLine();
+            serieCollection.searchByNameSerie(searchName);
+        } else if ("Year".equalsIgnoreCase(searching)) {
+            System.out.println("Enter Year: ");
+            int searchAge = scanner.nextInt();
+            serieCollection.searchByAgeSerie(searchAge);
+        } else if ("Rating".equalsIgnoreCase(searching)) {
+            System.out.println("Enter Rating: ");
+            double searchRating = scanner.nextDouble();
+            serieCollection.searchByRatingSerie(searchRating);
+        } else if ("Category".equalsIgnoreCase(searching)) {
+            System.out.println("Enter Category: ");
+            String searchCat = scanner.nextLine();
+            serieCollection.searchByCatSerie(searchCat);
+        } else {
+            System.out.println("Invalid");
+
+        }
+        scanner.close();
+    }
+
+    static class SerieCollection { // arraylist af film i FilmCollection klassen
+        private final ArrayList<Serie> readSerieData;
+
+        public SerieCollection(ArrayList<Serie> readSerieData) { // initializer readFilmData Arraylisten
+            this.readSerieData = readSerieData;
+
+        }
+
+        public void searchByCatSerie(String searchCategory) // søger efter categori af filmene
+        {
+
+            TextUI ui = new TextUI();
+
+            boolean found = false;
+
+            System.out.println("\nResults for search: " + searchCategory);
+
+            for (Serie serie : readSerieData) {
+                if (serie.getCategories().contains(searchCategory)) {
+                    System.out.println(serie.toString());
+                    found = true;
+                }
+            }
+
+
+            if (!found) {
+                String userInput = ui.getInput("No films found: " + searchCategory);
+                System.out.println(userInput);
+            }
+        }
+
+        public void searchByRatingSerie(double searchRating) // søger for rating af filmene
+        {
+
+            TextUI ui = new TextUI();
+
+            boolean found = false;
+
+            System.out.println("\nResults for search: " + searchRating);
+
+            for (Serie serie : readSerieData) {
+                if (serie.getRating() == searchRating) {
+                    System.out.println(serie);
+                    found = true;
+                }
+            }
+
+
+            if (!found) {
+                String userInput = ui.getInput("No films found: " + searchRating);
+                System.out.println(userInput);
+            }
+        }
+
+        public void searchByAgeSerie(int searchAge) // søger for udgivelsesdatoen af filmene
+        {
+
+            TextUI ui = new TextUI();
+
+            boolean found = false;
+
+            System.out.println("\nResults for search: " + searchAge);
+
+            for (Serie serie : readSerieData) {
+                if (serie.getYear() == searchAge) {
+                    System.out.println(serie);
+                    found = true;
+                }
+            }
+
+            if (!found) {
+                String userInput = ui.getInput("No films found: " + searchAge);
+                System.out.println(userInput);
+            }
+        }
+
+        public void searchByNameSerie(String searchName) // bruges til at søge efter navn af filmene
+        {
+            TextUI ui = new TextUI();
+
+            String lowerCaseSearchName = searchName.toLowerCase();
+
+            boolean found = false;
+
+            System.out.println("\nResults for search: " + searchName);
+
+
+            for (Serie serie : readSerieData) {
+                if (serie.getName().toLowerCase().contains(lowerCaseSearchName)) {
+                    System.out.println(serie);
+                    found = true;
+                }
+            }
+
+
+            if (!found) {
+
+                String userInput = ui.getInput("No films found");
+                System.out.println(userInput + searchName);
             }
         }
 

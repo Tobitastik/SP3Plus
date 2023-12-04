@@ -40,7 +40,7 @@ public class Media {
             Season watchedSeason = new Season(Integer.toString(season), episode);
             //watchedSerie.getSeason().add(watchedSeason);
 
-            System.out.println("Debug: User information - " + user);
+            //System.out.println("Debug: User information - " + user);
 
             if (user != null) {
 
@@ -59,8 +59,6 @@ public class Media {
             System.out.println("Invalid choice");
         }
     }
-
-
 
     //gemmes i tilf?lde af den anden ikke virker spoiler it doesn't
    /* public void playSerieOrSave() {
