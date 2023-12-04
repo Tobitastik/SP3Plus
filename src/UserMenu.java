@@ -252,9 +252,7 @@ public class UserMenu {
     }
 
     public void Runner() {
-        readFilmData = fl.getFilms(); // Kalder på readFilmData Arraylisten for filmene fra FileIO klassen
         input();
-
     }
 
 
