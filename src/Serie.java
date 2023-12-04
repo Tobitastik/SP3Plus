@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Serie implements MediaInterface{
+public class Serie implements MediaInterface {
 
     private String name;
     private String year;
@@ -10,14 +10,51 @@ public class Serie implements MediaInterface{
     private ArrayList<Integer> episodes;
     private String startYear;
     private String endYear;
+    private ArrayList<Film> films;
 
-    public Serie(String name, String year, ArrayList<String> categories, double rating, ArrayList<Season> seasons){
+    public Serie(String name, String year, ArrayList<String> categories, double rating, ArrayList<Season> seasons, ArrayList<Film> films) {
         this.name = name;
-        this. year = year;
+        this.year = year;
         this.categories = categories;
         this.rating = rating;
         this.seasons = seasons;
         this.episodes = new ArrayList<>();
+        this.startYear = year;
+        this.endYear = year;
+        this.films = films;
+    }
+
+    public void addSeason(Season season) {
+        seasons.add(season);
+    }
+
+    public void addFilm(Film film) {
+        films.add(film);
+    }
+
+    @Override
+    public String display() {
+        StringBuilder seasonString = new StringBuilder("[");
+
+        for (Season s : seasons) {
+            seasonString.append("Season ").append(s.getNumberOfSeasons()).append(": ");
+            int seasonEpisodes = s.getEpisodes();
+
+            seasonString.append("Episodes ").append(seasonEpisodes).append(" | ");
+        }
+
+        if (!seasons.isEmpty()) {
+            seasonString.delete(seasonString.length() - 3, seasonString.length());
+        }
+
+        seasonString.append("]");
+
+        return "Serie{" +
+                "Name = " + name +
+                ", Year = " + year +
+                ", Categories = " + categories +
+                ", Rating = " + rating +
+                ", Seasons = " + seasonString.toString() + "}";
     }
 
     public String getName() {
@@ -66,31 +103,4 @@ public class Serie implements MediaInterface{
     public ArrayList<Integer> getEpisodes(){
         return episodes;
     }
-
-
-    @Override
-    public String display() {
-        StringBuilder seasonString = new StringBuilder("[");
-
-        for (Season s : seasons) {
-            seasonString.append("Season ").append(s.getNumberOfSeasons()).append(": ");
-            int seasonEpisodes = s.getEpisodes();
-
-            seasonString.append("Episodes ").append(seasonEpisodes).append(" | ");
-        }
-
-        if (!seasons.isEmpty()) {
-            seasonString.delete(seasonString.length() - 3, seasonString.length());
-        }
-
-        seasonString.append("]");
-
-        return "Serie{" +
-                "Name = " + name +
-                ", Year = " + year +
-                ", Categories = " + categories +
-                ", Rating = " + rating +
-                ", Seasons = " + seasonString.toString() + "}";
-    }
-
 }

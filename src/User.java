@@ -8,17 +8,15 @@ public class User {
     private ArrayList<Serie> serieWatched;
     private ArrayList<Serie> serieSaved;
 
-
-    public User(String username){
+    public User(String username) {
         this.username = username;
         this.filmWatched = new ArrayList<>();
         this.filmSaved = new ArrayList<>();
         this.serieWatched = new ArrayList<>();
         this.serieSaved = new ArrayList<>();
-
     }
 
-    public String getUsername(){
+    public String getUsername() {
         return username;
     }
 
@@ -38,11 +36,11 @@ public class User {
         return serieSaved;
     }
 
-    public void addToSavedSerie(Serie serie){
+    public void addToSavedSerie(Serie serie) {
         serieSaved.add(serie);
     }
 
-    public void addToWatchedSerie(Serie serie){
+    public void addToWatchedSerie(Serie serie) {
         serieWatched.add(serie);
     }
 }
