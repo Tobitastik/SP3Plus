@@ -24,7 +24,7 @@ public class Media {
         }
     }
 
-    public void playSerieOrSave() {
+   /* public void playSerieOrSave() {
         System.out.println("1. Play");
         System.out.println("2. Save");
 
@@ -58,7 +58,7 @@ public class Media {
         } else {
             System.out.println("Invalid choice");
         }
-    }
+    }*/
 
     //gemmes i tilf?lde af den anden ikke virker spoiler it doesn't
    /* public void playSerieOrSave() {

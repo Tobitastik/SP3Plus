@@ -34,6 +34,7 @@ public class Main {
         System.out.println("Serie size: "+fileLib.getSeries().size());
         System.out.println("MovieDB size: "+fileLib.getFilmsDB().size());
         System.out.println("SerieDB size: "+fileLib.getSeriesDB().size());
+
         userMenu.chooseIOProvider();
     }
 }

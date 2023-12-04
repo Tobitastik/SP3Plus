@@ -3,40 +3,28 @@ import java.util.Scanner;
 
 public class UserMenu {
     private TextUI textUI;
-    private Media media;
     private ArrayList<Serie> series;
-    private ArrayList<Serie> seriesDB;
     private ArrayList<Film> readFilmData;
     private ArrayList<Serie> readSerieData;
-    private Menu menu;
     private SearchManager searchManager;
-    FileIO fileIO;
-    DBIO dbIO;
-    FileLib fl;
+    private FileLib fileLib;
 
-
-    private static DBIO dbio = new DBIO();
-
-    public UserMenu(TextUI ui, ArrayList<Film> films, ArrayList<Serie> series, Menu menu) {
+    public UserMenu(TextUI ui, ArrayList<Film> films, ArrayList<Serie> series, SearchManager searchManager, FileLib fileLib) {
         this.textUI = ui;
         this.series = series;
         this.readFilmData = films;
-        this.media = new Media(ui);
-        this.menu = menu;
-        this.searchManager = new SearchManager(fileIO, dbIO, textUI, fl);
+        this.searchManager = searchManager;
+        this.fileLib = fileLib;
     }
 
-    public UserMenu(SearchManager searchManager, TextUI textUI) {
-        this.searchManager = searchManager;
-        this.textUI = textUI;
-    }
     public void chooseIOProvider() {
         int choice = textUI.getNumericInput("Vil du gøre brug af FileIO eller DBIO? Tryk 1 for FileIO og 2 for DBIO:");
 
         if (choice == 1) {
-            searchManager.performSearch(true);
+            new FileIO().readFilmData(fileLib);
+            new FileIO().readSerieData(fileLib);
         } else if (choice == 2) {
-            searchManager.performSearch(false);
+            // Implementer din DBIO-logik her, hvis nødvendigt
         } else {
             System.out.println("Ugyldigt valg. Prøv igen.");
             chooseIOProvider();
@@ -44,17 +32,14 @@ public class UserMenu {
     }
 
     public void chooseMenu() {
-        int choice;
-
         int b = textUI.getNumericInput("1 for Film 2 for Serie");
         switch (b) {
             case 1:
                 Runner();
                 break;
-
             case 2:
                 displayMenu();
-                choice = textUI.getNumericInput("Chose your search method");
+                int choice = textUI.getNumericInput("Chose your search method");
                 switch (choice) {
                     case 1:
                         searchForSerieName();
@@ -75,17 +60,16 @@ public class UserMenu {
                         System.out.println("Exiting menu");
                         break;
                     default:
-                        System.out.println("Invalid choice, try again please");
+                        System.out.println("Invalid choice, please try again");
                         break;
                 }
                 break;
-
             default:
-                System.out.println("Please press 1 or 2");
+                System.out.println("Invalid choice, please try again");
+                chooseMenu();
                 break;
         }
     }
-
 
     private void displayMenu() {
         System.out.println("1. Search by name");
@@ -112,7 +96,7 @@ public class UserMenu {
             if (selectedSerieIndex >= 1 && selectedSerieIndex <= searchResults.size()) {
                 Serie selectedSerie = searchResults.get(selectedSerieIndex - 1);
                 System.out.println(selectedSerie.getName());
-                media.playSerieOrSave();
+                //media.playSerieOrSave();
 
             } else {
                 System.out.println("Please enter valid number");
@@ -154,7 +138,7 @@ public class UserMenu {
             if (selectedSerieIndex >= 1 && selectedSerieIndex <= searchResults.size()) {
                 Serie selectedSerie = searchResults.get(selectedSerieIndex - 1);
                 System.out.println(selectedSerie.getName());
-                media.playSerieOrSave();
+                //media.playSerieOrSave();
 
             } else {
                 System.out.println("Please enter valid number");
@@ -183,7 +167,7 @@ public class UserMenu {
             if (selectedSerieIndex >= 1 && selectedSerieIndex <= searchResults.size()) {
                 Serie selectedSerie = searchResults.get(selectedSerieIndex - 1);
                 System.out.println(selectedSerie.getName());
-                media.playSerieOrSave();
+                //media.playSerieOrSave();
             } else {
                 System.out.println("Please enter a valid number");
             }
@@ -250,7 +234,7 @@ public class UserMenu {
             if (selectedSerieIndex >= 1 && selectedSerieIndex <= searchResults.size()) {
                 Serie selectedSerie = searchResults.get(selectedSerieIndex - 1);
                 System.out.println(selectedSerie.getName());
-                media.playSerieOrSave();
+                //media.playSerieOrSave();
             } else {
                 System.out.println("Please enter a valid number");
             }

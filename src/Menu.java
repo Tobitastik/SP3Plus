@@ -9,7 +9,7 @@ public class Menu {
     private ArrayList<Serie> series;
     private UserMenu userMenu;
 
-    public Menu(ArrayList<Film> films, ArrayList<Serie> series) {
+    public Menu(ArrayList<ArrayList<Film>> films, ArrayList<ArrayList<Serie>> series) {
         this.films = films;
         this.series = series;
         /*loadUsersFromFile();
@@ -19,12 +19,12 @@ public class Menu {
 
     }
 
-    private void loadUsersFromFile(){
+   /* private void loadUsersFromFile(){
         FileIO io = new FileIO();
         users = io.readUsersFromFile();
-    }
+    }*/
 
-    public void displayMenu() {
+   /* public void displayMenu() {
         FileIO io = new FileIO();
 
         do {
@@ -47,9 +47,9 @@ public class Menu {
             }
         } while (!s.toLowerCase().equals("y") && !s.toLowerCase().equals("n"));
 
-    }
+    }*/
 
-    private void createUser() {
+  /*  private void createUser() {
         String newUsername = ui.getInput("Enter new username");
         User newUser = new User(newUsername);
         users.add(newUser);
@@ -57,10 +57,10 @@ public class Menu {
 
         FileIO io = new FileIO();
         io.writeUsersToFile(users, "data/accounts.txt");
-    }
+    }*/
 
 
-    private void newLogin() {
+   /* private void newLogin() {
 
         FileIO io = new FileIO();
         ArrayList<User> usersFromFile = io.readUsersFromFile();
@@ -95,6 +95,6 @@ public class Menu {
 
     public ArrayList<User> getUsers() {
         return users;
-    }
+    }*/
 
 }
